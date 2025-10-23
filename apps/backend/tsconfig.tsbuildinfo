@@ -1,1 +1,1 @@
-{"root":["./src/index.ts"],"version":"5.9.3"}
+{"root":["./src/index.ts","./src/config/envvariables.ts","./src/controllers/authcontrollers.ts","./src/db/prisma.ts","./src/routes/authroutes.ts","./src/utils/zodschema.ts"],"version":"5.9.3"}
