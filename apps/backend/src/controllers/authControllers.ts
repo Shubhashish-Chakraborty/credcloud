@@ -17,7 +17,7 @@ export const signup = async (req: Request, res: Response) => {
             return;
         }
 
-        const { username, password } = result.data;
+        const { username, password, authQuestions } = result.data;
 
         // Check if user already exists, By username!
 
@@ -41,11 +41,21 @@ export const signup = async (req: Request, res: Response) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // STORING the user to Database!
+        // 3. Hash the answers to the auth questions
+        const processedQuestions = await Promise.all(
+            authQuestions.map(async (q: { question: string; answer: string }) => ({
+                question: q.question,
+                answer: await bcrypt.hash(q.answer, 10),
+            }))
+        );
+
         const USER = await prisma.user.create({
             data: {
                 username: username,
                 password: hashedPassword,
+                authQuestions: {
+                    create: processedQuestions,
+                }
             }
         });
 
@@ -61,3 +71,4 @@ export const signup = async (req: Request, res: Response) => {
         });
     }
 };
+
