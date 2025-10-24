@@ -168,3 +168,30 @@ export const logout = (req: Request, res: Response) => {
         return
     }
 };
+
+export const getAuthQuestions = async (req: Request, res: Response) => {
+    const { username } = req.params;
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                username
+            },
+            include: {
+                authQuestions: {
+                    select: { id: true, question: true }, // Only send the questions, NOT the answers
+                },
+            },
+        });
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        // We will pick 2 random questions to ask
+        const questions = user.authQuestions.sort(() => 0.5 - Math.random()).slice(0, 2);
+        res.status(200).json({ questions });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};

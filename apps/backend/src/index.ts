@@ -1,11 +1,13 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { PORT } from './config/envVariables';
 import { AuthRouter } from './routes/authRoutes';
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser()); 
 
 
 const corsOptions = {
